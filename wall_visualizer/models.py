@@ -11,12 +11,16 @@ from .config import WallConfig
 class BrickKind(str, Enum):
     FULL = "full"
     HALF = "half"
+    HEADER = "header"
+    THREE_QUARTER = "three_quarter"
+    QUARTER = "quarter"
 
 
 @dataclass(frozen=True)
 class BrickSpec:
     kind: BrickKind
-    width_mm: float
+    length_mm: float
+    metadata: dict | None = None
 
 
 @dataclass
@@ -27,13 +31,13 @@ class Brick:
     kind: BrickKind
     x_mm: float
     y_mm: float
-    width_mm: float
+    length_mm: float
     height_mm: float
     stride_id: int | None = None
 
     @property
     def center_x(self) -> float:
-        return self.x_mm + self.width_mm / 2
+        return self.x_mm + self.length_mm / 2
 
     @property
     def center_y(self) -> float:

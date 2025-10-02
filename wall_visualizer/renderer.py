@@ -56,7 +56,7 @@ class Renderer:
         chars: List[str] = [" "] * self.line_width
         for brick in bricks:
             start = int(round(brick.x_mm / self.scale_mm))
-            end = int(round((brick.x_mm + brick.width_mm) / self.scale_mm))
+            end = int(round((brick.x_mm + brick.length_mm) / self.scale_mm))
             start = max(start, 0)
             end = min(end, self.line_width)
             if start >= end:

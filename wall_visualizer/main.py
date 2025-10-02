@@ -4,7 +4,7 @@ from __future__ import annotations
 import argparse
 from typing import Dict
 
-from .bond import DEFAULT_BOND
+from .bond import DEFAULT_BOND_NAME, bond_catalog
 from .config import DEFAULT_CONFIG, WallConfig
 from .controller import WallController
 from .renderer import Renderer
@@ -18,6 +18,7 @@ def build_strategy_catalog() -> Dict[str, BuildStrategy]:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    bonds = bond_catalog()
     parser = argparse.ArgumentParser(description="Interactive masonry wall build visualizer")
     parser.add_argument(
         "--no-colour",
@@ -30,13 +31,20 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         default=10.0,
         help="Wall width represented per character (default: 10mm)",
     )
+    parser.add_argument(
+        "--bond",
+        choices=sorted(bonds.keys()),
+        default=DEFAULT_BOND_NAME,
+        help="Select the brick bond pattern",
+    )
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> None:
     args = parse_args(argv)
     config: WallConfig = DEFAULT_CONFIG
-    builder = WallBuilder(config=config, bond=DEFAULT_BOND)
+    bond = bond_catalog()[args.bond]
+    builder = WallBuilder(config=config, bond=bond)
     wall = builder.build()
 
     strategies = build_strategy_catalog()

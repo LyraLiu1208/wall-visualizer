@@ -17,6 +17,9 @@ class WallConfig:
     wall_height_mm: float = 2000.0
     brick_full: BrickSize = BrickSize(length=210.0, width=100.0, height=50.0)
     brick_half_length_mm: float = 100.0
+    brick_three_quarter_length_mm: float = 157.5
+    brick_quarter_length_mm: float = 52.5
+    brick_header_length_mm: float | None = None
     head_joint_mm: float = 10.0
     bed_joint_mm: float = 12.5
     course_height_mm: float = 62.5
@@ -49,6 +52,19 @@ class WallConfig:
                 "Wall width does not align to half-brick modules with current configuration"
             )
         return int(round(total / module))
+
+    def length_for_kind(self, kind: str) -> float:
+        if kind == "full":
+            return self.brick_full.length
+        if kind == "half":
+            return self.brick_half_length_mm
+        if kind == "three_quarter":
+            return self.brick_three_quarter_length_mm
+        if kind == "quarter":
+            return self.brick_quarter_length_mm
+        if kind == "header":
+            return self.brick_header_length_mm or self.brick_full.width
+        raise KeyError(f"Unknown brick kind length for '{kind}'")
 
 
 DEFAULT_CONFIG = WallConfig()
